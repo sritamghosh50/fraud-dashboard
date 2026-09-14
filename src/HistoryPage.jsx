@@ -1,33 +1,105 @@
 import { useEffect, useState } from 'react';
 import { api } from './api';
 
+import linkImage from './Logo/Link.png';
+import messageImage from './Logo/message-logo.png';
+import imageImage from './Logo/Image.png';
+
 // Sample rows from the spec — used only if the backend is unreachable.
 const MOCK_HISTORY = [
-  { id: 'mock-1', checkType: 'URL', inputSummary: 'https://secure-login-update.com', checkedAt: '2025-09-10T18:45:00', scam: true, scamCategory: 'Phishing', riskLevel: 'CRITICAL', riskScore: 92, llmExplanation: '', recommendation: '' },
-  { id: 'mock-2', checkType: 'MESSAGE', inputSummary: 'You have won a free iPhone! Click here...', checkedAt: '2025-09-10T17:32:00', scam: true, scamCategory: 'Prize Scam', riskLevel: 'HIGH', riskScore: 85, llmExplanation: '', recommendation: '' },
-  { id: 'mock-3', checkType: 'IMAGE', inputSummary: 'suspicious_image.jpg', checkedAt: '2025-09-10T16:18:00', scam: false, scamCategory: 'No threat detected', riskLevel: 'LOW', riskScore: 8, llmExplanation: '', recommendation: '' },
-  { id: 'mock-4', checkType: 'URL', inputSummary: 'https://amazon.co.uk/offer', checkedAt: '2025-09-10T15:05:00', scam: false, scamCategory: 'No threat detected', riskLevel: 'LOW', riskScore: 5, llmExplanation: '', recommendation: '' },
-  { id: 'mock-5', checkType: 'MESSAGE', inputSummary: 'Your account will be suspended...', checkedAt: '2025-09-10T13:22:00', scam: true, scamCategory: 'Account Suspension Scam', riskLevel: 'HIGH', riskScore: 88, llmExplanation: '', recommendation: '' },
-  { id: 'mock-6', checkType: 'IMAGE', inputSummary: 'edited_image.png', checkedAt: '2025-09-10T12:50:00', scam: false, scamCategory: 'No threat detected', riskLevel: 'LOW', riskScore: 12, llmExplanation: '', recommendation: '' },
+  {
+    id: 'mock-1',
+    checkType: 'URL',
+    inputSummary: 'https://secure-login-update.com',
+    checkedAt: '2025-09-10T18:45:00',
+    scam: true,
+    scamCategory: 'Phishing',
+    riskLevel: 'CRITICAL',
+    riskScore: 92,
+    llmExplanation: '',
+    recommendation: '',
+  },
+  {
+    id: 'mock-2',
+    checkType: 'MESSAGE',
+    inputSummary: 'You have won a free iPhone! Click here...',
+    checkedAt: '2025-09-10T17:32:00',
+    scam: true,
+    scamCategory: 'Prize Scam',
+    riskLevel: 'HIGH',
+    riskScore: 85,
+    llmExplanation: '',
+    recommendation: '',
+  },
+  {
+    id: 'mock-3',
+    checkType: 'IMAGE',
+    inputSummary: 'suspicious_image.jpg',
+    checkedAt: '2025-09-10T16:18:00',
+    scam: false,
+    scamCategory: 'No threat detected',
+    riskLevel: 'LOW',
+    riskScore: 8,
+    llmExplanation: '',
+    recommendation: '',
+  },
+  {
+    id: 'mock-4',
+    checkType: 'URL',
+    inputSummary: 'https://amazon.co.uk/offer',
+    checkedAt: '2025-09-10T15:05:00',
+    scam: false,
+    scamCategory: 'No threat detected',
+    riskLevel: 'LOW',
+    riskScore: 5,
+    llmExplanation: '',
+    recommendation: '',
+  },
+  {
+    id: 'mock-5',
+    checkType: 'MESSAGE',
+    inputSummary: 'Your account will be suspended...',
+    checkedAt: '2025-09-10T13:22:00',
+    scam: true,
+    scamCategory: 'Account Suspension Scam',
+    riskLevel: 'HIGH',
+    riskScore: 88,
+    llmExplanation: '',
+    recommendation: '',
+  },
+  {
+    id: 'mock-6',
+    checkType: 'IMAGE',
+    inputSummary: 'edited_image.png',
+    checkedAt: '2025-09-10T12:50:00',
+    scam: false,
+    scamCategory: 'No threat detected',
+    riskLevel: 'LOW',
+    riskScore: 12,
+    llmExplanation: '',
+    recommendation: '',
+  },
 ];
 
 const TYPE_META = {
   URL: {
-    icon: '🔗',
+    icon: linkImage,
     title: 'URL Check',
     color: '#3B5BFE',
     bg: '#E3EAFF',
     filterKey: 'url',
   },
+
   MESSAGE: {
-    icon: '💬',
+    icon: messageImage,
     title: 'Message Analysis',
     color: '#8B5CF6',
     bg: '#F1EBFF',
     filterKey: 'message',
   },
+
   IMAGE: {
-    icon: '🖼️',
+    icon: imageImage,
     title: 'Image Scan',
     color: '#10B9A6',
     bg: '#DFFAF4',
@@ -43,59 +115,43 @@ const FILTER_TABS = [
 ];
 
 export default function HistoryPage() {
-
   const [history, setHistory] = useState([]);
 
-  const [loading, setLoading] =
-    useState(true);
+  const [loading, setLoading] = useState(true);
 
-  const [usingMock, setUsingMock] =
-    useState(false);
+  const [usingMock, setUsingMock] = useState(false);
 
-  const [openId, setOpenId] =
-    useState(null);
+  const [openId, setOpenId] = useState(null);
 
-  const [filter, setFilter] =
-    useState(() => {
-      return localStorage.getItem(
-        'fraudguard_history_filter'
-      ) || 'all';
-    });
+  const [filter, setFilter] = useState(() => {
+    return (
+      localStorage.getItem('fraudguard_history_filter') || 'all'
+    );
+  });
 
   async function loadHistory() {
-
     try {
-
       setLoading(true);
       setUsingMock(false);
 
-      const data =
-        await api.getScamHistory();
+      const data = await api.getScamHistory();
 
       setHistory(
         Array.isArray(data)
           ? data
           : []
       );
-
     } catch (err) {
-
       console.error(
         'Failed to load history:',
         err
       );
 
-      // Backend unreachable — fall back to sample data
-      // so the UI still renders per the design spec.
       setHistory(MOCK_HISTORY);
       setUsingMock(true);
-
     } finally {
-
       setLoading(false);
-
     }
-
   }
 
   useEffect(() => {
@@ -103,7 +159,6 @@ export default function HistoryPage() {
   }, []);
 
   useEffect(() => {
-
     const savedFilter =
       localStorage.getItem(
         'fraudguard_history_filter'
@@ -118,19 +173,25 @@ export default function HistoryPage() {
     } else {
       setFilter('all');
     }
-
   }, []);
 
   function changeFilter(newFilter) {
     setFilter(newFilter);
+
     localStorage.setItem(
       'fraudguard_history_filter',
-      newFilter === 'all' ? '' : newFilter
+      newFilter === 'all'
+        ? ''
+        : newFilter
     );
   }
 
   function toggleHistory(id) {
-    setOpenId(openId === id ? null : id);
+    setOpenId(
+      openId === id
+        ? null
+        : id
+    );
   }
 
   function clearAll() {
@@ -138,7 +199,6 @@ export default function HistoryPage() {
   }
 
   function formatDate(dateValue) {
-
     if (!dateValue) {
       return '';
     }
@@ -150,11 +210,9 @@ export default function HistoryPage() {
     }
 
     return date.toLocaleString();
-
   }
 
   function getFilteredHistory() {
-
     if (filter === 'all') {
       return history;
     }
@@ -164,7 +222,6 @@ export default function HistoryPage() {
         TYPE_META[item.checkType]
           ?.filterKey === filter
     );
-
   }
 
   const filteredHistory =
@@ -176,10 +233,10 @@ export default function HistoryPage() {
     ).length;
 
   const safeCount =
-    filteredHistory.length - fraudCount;
+    filteredHistory.length -
+    fraudCount;
 
   return (
-
     <div style={styles.page}>
 
       {/* HEADER */}
@@ -201,7 +258,9 @@ export default function HistoryPage() {
         <button
           style={styles.clearButton}
           onClick={clearAll}
-          disabled={filteredHistory.length === 0}
+          disabled={
+            filteredHistory.length === 0
+          }
         >
           Clear All
         </button>
@@ -212,14 +271,21 @@ export default function HistoryPage() {
       <div style={styles.pillRow}>
 
         {FILTER_TABS.map((tab) => {
-          const active = filter === tab.key;
+
+          const active =
+            filter === tab.key;
+
           return (
             <button
               key={tab.key}
-              onClick={() => changeFilter(tab.key)}
+              onClick={() =>
+                changeFilter(tab.key)
+              }
               style={{
                 ...styles.pill,
-                ...(active ? styles.pillActive : {}),
+                ...(active
+                  ? styles.pillActive
+                  : {}),
               }}
             >
               {tab.label}
@@ -239,7 +305,9 @@ export default function HistoryPage() {
       {/* LOADING */}
       {loading && (
         <div style={styles.stateBox}>
-          <p>Loading your history...</p>
+          <p>
+            Loading your history...
+          </p>
         </div>
       )}
 
@@ -247,15 +315,34 @@ export default function HistoryPage() {
       {!loading &&
         filteredHistory.length === 0 && (
           <div style={styles.stateBox}>
-            <div style={{ fontSize: '32px', marginBottom: '10px' }}>
+
+            <div
+              style={{
+                fontSize: '32px',
+                marginBottom: '10px',
+              }}
+            >
               🛡️
             </div>
-            <h2 style={{ fontSize: '17px', marginBottom: '6px' }}>
+
+            <h2
+              style={{
+                fontSize: '17px',
+                marginBottom: '6px',
+              }}
+            >
               No history found
             </h2>
-            <p style={{ fontSize: '13.5px' }}>
-              Your security checks will appear here after you analyze them.
+
+            <p
+              style={{
+                fontSize: '13.5px',
+              }}
+            >
+              Your security checks will appear here
+              after you analyze them.
             </p>
+
           </div>
         )}
 
@@ -269,22 +356,41 @@ export default function HistoryPage() {
             <div style={styles.summaryRow}>
 
               <div style={styles.summaryCard}>
-                <span style={styles.summaryLabel}>Total Checks</span>
+                <span style={styles.summaryLabel}>
+                  Total Checks
+                </span>
+
                 <strong style={styles.summaryValue}>
                   {filteredHistory.length}
                 </strong>
               </div>
 
               <div style={styles.summaryCard}>
-                <span style={styles.summaryLabel}>Scams Detected</span>
-                <strong style={{ ...styles.summaryValue, color: '#E14848' }}>
+                <span style={styles.summaryLabel}>
+                  Scams Detected
+                </span>
+
+                <strong
+                  style={{
+                    ...styles.summaryValue,
+                    color: '#E14848',
+                  }}
+                >
                   {fraudCount}
                 </strong>
               </div>
 
               <div style={styles.summaryCard}>
-                <span style={styles.summaryLabel}>Safe / Low Risk</span>
-                <strong style={{ ...styles.summaryValue, color: '#1AA45C' }}>
+                <span style={styles.summaryLabel}>
+                  Safe / Low Risk
+                </span>
+
+                <strong
+                  style={{
+                    ...styles.summaryValue,
+                    color: '#1AA45C',
+                  }}
+                >
                   {safeCount}
                 </strong>
               </div>
@@ -292,14 +398,20 @@ export default function HistoryPage() {
             </div>
 
             {/* ROWS */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '12px',
+              }}
+            >
 
               {filteredHistory.map((item) => {
 
                 const meta =
                   TYPE_META[item.checkType] ||
                   {
-                    icon: '🔍',
+                    icon: linkImage,
                     title: 'Security Check',
                     color: '#5B6178',
                     bg: '#EEF0F8',
@@ -321,17 +433,34 @@ export default function HistoryPage() {
                     {/* ROW MAIN */}
                     <div style={styles.rowMain}>
 
-                      <div style={{ ...styles.rowIcon, background: meta.bg, color: meta.color }}>
-                        {meta.icon}
+                      {/* CHANGED IMAGE */}
+                      <div
+                        style={{
+                          ...styles.rowIcon,
+                          background: meta.bg,
+                        }}
+                      >
+                        <img
+                          src={meta.icon}
+                          alt=""
+                          style={styles.rowIconImage}
+                        />
                       </div>
 
-                      <div style={{ flex: 1, minWidth: 0 }}>
+                      <div
+                        style={{
+                          flex: 1,
+                          minWidth: 0,
+                        }}
+                      >
 
                         <div style={styles.rowTitle}>
                           {meta.title}
                         </div>
 
-                        <div style={styles.rowSubtitle}>
+                        <div
+                          style={styles.rowSubtitle}
+                        >
                           {item.inputSummary ||
                             item.scamCategory ||
                             'No content available'}
@@ -340,7 +469,9 @@ export default function HistoryPage() {
                       </div>
 
                       <div style={styles.rowDate}>
-                        {formatDate(item.checkedAt)}
+                        {formatDate(
+                          item.checkedAt
+                        )}
                       </div>
 
                       <span
@@ -354,16 +485,22 @@ export default function HistoryPage() {
                             : '#1AA45C',
                         }}
                       >
-                        {isFraud ? 'Fraud' : 'Not Fraud'}
+                        {isFraud
+                          ? 'Fraud'
+                          : 'Not Fraud'}
                       </span>
 
                       <button
                         style={styles.viewButton}
                         onClick={() =>
-                          toggleHistory(item.id)
+                          toggleHistory(
+                            item.id
+                          )
                         }
                       >
-                        {isOpen ? 'Hide Details' : 'View Details'}
+                        {isOpen
+                          ? 'Hide Details'
+                          : 'View Details'}
                       </button>
 
                     </div>
@@ -371,26 +508,78 @@ export default function HistoryPage() {
                     {/* EXPANDED DETAILS */}
                     {isOpen && (
 
-                      <div style={styles.detailsBox}>
+                      <div
+                        style={
+                          styles.detailsBox
+                        }
+                      >
 
-                        <div style={styles.detailGrid}>
+                        <div
+                          style={
+                            styles.detailGrid
+                          }
+                        >
 
-                          <div style={styles.detailItem}>
-                            <span style={styles.detailLabel}>Category</span>
-                            <strong style={styles.detailValue}>
-                              {item.scamCategory || 'Unknown'}
+                          <div
+                            style={
+                              styles.detailItem
+                            }
+                          >
+                            <span
+                              style={
+                                styles.detailLabel
+                              }
+                            >
+                              Category
+                            </span>
+
+                            <strong
+                              style={
+                                styles.detailValue
+                              }
+                            >
+                              {item.scamCategory ||
+                                'Unknown'}
                             </strong>
                           </div>
 
-                          <div style={styles.detailItem}>
-                            <span style={styles.detailLabel}>Risk Score</span>
-                            <strong style={styles.detailValue}>
-                              {item.riskScore ?? 0}/100
+                          <div
+                            style={
+                              styles.detailItem
+                            }
+                          >
+                            <span
+                              style={
+                                styles.detailLabel
+                              }
+                            >
+                              Risk Score
+                            </span>
+
+                            <strong
+                              style={
+                                styles.detailValue
+                              }
+                            >
+                              {item.riskScore ??
+                                0}
+                              /100
                             </strong>
                           </div>
 
-                          <div style={styles.detailItem}>
-                            <span style={styles.detailLabel}>Result</span>
+                          <div
+                            style={
+                              styles.detailItem
+                            }
+                          >
+                            <span
+                              style={
+                                styles.detailLabel
+                              }
+                            >
+                              Result
+                            </span>
+
                             <strong
                               style={{
                                 ...styles.detailValue,
@@ -409,11 +598,25 @@ export default function HistoryPage() {
 
                         {item.llmExplanation && (
 
-                          <div style={{ marginTop: '14px' }}>
+                          <div
+                            style={{
+                              marginTop: '14px',
+                            }}
+                          >
 
-                            <span style={styles.detailLabel}>Why</span>
+                            <span
+                              style={
+                                styles.detailLabel
+                              }
+                            >
+                              Why
+                            </span>
 
-                            <p style={styles.detailText}>
+                            <p
+                              style={
+                                styles.detailText
+                              }
+                            >
                               {item.llmExplanation}
                             </p>
 
@@ -423,11 +626,25 @@ export default function HistoryPage() {
 
                         {item.recommendation && (
 
-                          <div style={{ marginTop: '12px' }}>
+                          <div
+                            style={{
+                              marginTop: '12px',
+                            }}
+                          >
 
-                            <span style={styles.detailLabel}>Recommendation</span>
+                            <span
+                              style={
+                                styles.detailLabel
+                              }
+                            >
+                              Recommendation
+                            </span>
 
-                            <p style={styles.detailText}>
+                            <p
+                              style={
+                                styles.detailText
+                              }
+                            >
                               {item.recommendation}
                             </p>
 
@@ -442,7 +659,6 @@ export default function HistoryPage() {
                   </div>
 
                 );
-
               })}
 
             </div>
@@ -452,9 +668,7 @@ export default function HistoryPage() {
         )}
 
     </div>
-
   );
-
 }
 
 const styles = {
@@ -496,7 +710,8 @@ const styles = {
     cursor: 'pointer',
     fontSize: '13.5px',
     fontWeight: 600,
-    boxShadow: '0 4px 20px rgba(20, 30, 70, 0.06)',
+    boxShadow:
+      '0 4px 20px rgba(20, 30, 70, 0.06)',
   },
 
   pillRow: {
@@ -539,7 +754,8 @@ const styles = {
 
   summaryRow: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+    gridTemplateColumns:
+      'repeat(auto-fit, minmax(150px, 1fr))',
     gap: '12px',
     marginBottom: '16px',
   },
@@ -569,7 +785,8 @@ const styles = {
     background: '#FFFFFF',
     borderRadius: '16px',
     border: '1px solid #E7E9F3',
-    boxShadow: '0 4px 20px rgba(20, 30, 70, 0.06)',
+    boxShadow:
+      '0 4px 20px rgba(20, 30, 70, 0.06)',
     overflow: 'hidden',
   },
 
@@ -587,8 +804,15 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    fontSize: '17px',
     flexShrink: 0,
+    overflow: 'hidden',
+  },
+
+  rowIconImage: {
+    width: '26px',
+    height: '26px',
+    objectFit: 'contain',
+    display: 'block',
   },
 
   rowTitle: {

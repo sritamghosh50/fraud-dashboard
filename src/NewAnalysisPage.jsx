@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { api } from './api';
 
+import checkUrlLinkImage from './Logo/Check-url-link.png';
+import staySafeOnlineImage from './Logo/stay safe online.png';
+
 const TOOL_CONFIG = {
   url: {
     icon: '🔗',
@@ -28,11 +31,61 @@ const TOOL_CONFIG = {
   },
 };
 
-const HOW_STEPS = [
-  { n: '1', title: 'Enter URL', desc: 'Paste the link you want to verify.' },
-  { n: '2', title: 'AI Analysis', desc: 'Our model checks for malicious patterns.' },
-  { n: '3', title: 'Get Result', desc: 'See if it’s Safe or Fraud with detailed explanation.' },
-];
+const HOW_STEPS = {
+  url: [
+    {
+      n: '1',
+      title: 'Enter URL',
+      desc: 'Paste the link you want to verify.',
+    },
+    {
+      n: '2',
+      title: 'AI Analysis',
+      desc: 'Our model checks the URL for suspicious patterns.',
+    },
+    {
+      n: '3',
+      title: 'Get Result',
+      desc: 'See if the URL is Safe or Fraud with detailed explanation.',
+    },
+  ],
+
+  message: [
+    {
+      n: '1',
+      title: 'Enter Message',
+      desc: 'Paste the SMS, WhatsApp or email message you want to check.',
+    },
+    {
+      n: '2',
+      title: 'AI Analysis',
+      desc: 'Our model checks the message for scam and phishing signs.',
+    },
+    {
+      n: '3',
+      title: 'Get Result',
+      desc: 'See if the message is Safe or Fraud with detailed explanation.',
+    },
+  ],
+
+  image: [
+    {
+      n: '1',
+      title: 'Upload Image',
+      desc: 'Choose the image you want to check for suspicious content.',
+    },
+    {
+      n: '2',
+      title: 'AI Analysis',
+      desc: 'Our model reads the image and checks for scam or phishing signs.',
+    },
+    {
+      n: '3',
+      title: 'Get Result',
+      desc: 'See if the image is Safe or Suspicious with detailed explanation.',
+    },
+  ],
+};
 
 export default function NewAnalysisPage() {
   const location = useLocation();
@@ -42,27 +95,20 @@ export default function NewAnalysisPage() {
     localStorage.getItem('fraudguard_history_filter') ||
     'url';
 
-  const [activeTool, setActiveTool] =
-    useState(initialTool);
+  const [activeTool, setActiveTool] = useState(initialTool);
 
-  const [inputValue, setInputValue] =
-    useState('');
+  const [inputValue, setInputValue] = useState('');
 
-  const [imageFile, setImageFile] =
-    useState(null);
+  const [imageFile, setImageFile] = useState(null);
 
-  const [result, setResult] =
-    useState(null);
+  const [result, setResult] = useState(null);
 
-  const [loading, setLoading] =
-    useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const [error, setError] =
-    useState('');
+  const [error, setError] = useState('');
 
   const config = TOOL_CONFIG[activeTool];
 
-  // Save current section.
   useEffect(() => {
     localStorage.setItem(
       'fraudguard_history_filter',
@@ -139,7 +185,10 @@ export default function NewAnalysisPage() {
               style={{
                 ...styles.tab,
                 ...(activeTool === key
-                  ? { background: cfg.color, color: 'white' }
+                  ? {
+                      background: cfg.color,
+                      color: 'white',
+                    }
                   : {}),
               }}
             >
@@ -155,26 +204,34 @@ export default function NewAnalysisPage() {
 
         <div style={styles.cardHeader}>
 
-          <div
-            style={{
-              ...styles.cardHeaderIcon,
-              background: config.color + '1A',
-              color: config.color,
-            }}
-          >
-            {config.icon}
+          {/* SAME CHECK URL IMAGE FOR ALL SECTIONS */}
+          <div style={styles.cardHeaderImageBox}>
+            <img
+              src={checkUrlLinkImage}
+              alt="Check URL Link"
+              style={styles.cardHeaderImage}
+            />
           </div>
 
-          <div>
-            <h2 style={styles.cardTitle}>{config.title}</h2>
-            <p style={styles.cardDesc}>{config.desc}</p>
+          <div style={styles.cardHeaderText}>
+
+            <h2 style={styles.cardTitle}>
+              {config.title}
+            </h2>
+
+            <p style={styles.cardDesc}>
+              {config.desc}
+            </p>
+
           </div>
 
         </div>
 
+        {/* INPUT SECTION */}
         {activeTool === 'image' ? (
 
           <div style={styles.imageInputRow}>
+
             <input
               type="file"
               accept="image/*"
@@ -183,6 +240,7 @@ export default function NewAnalysisPage() {
               }
               style={styles.fileInput}
             />
+
           </div>
 
         ) : (
@@ -219,13 +277,17 @@ export default function NewAnalysisPage() {
 
         )}
 
+        {/* ANALYZE BUTTON */}
         <button
           onClick={handleAnalyze}
           disabled={!canSubmit || loading}
           style={{
             ...styles.analyzeButton,
             background: config.color,
-            opacity: !canSubmit || loading ? 0.5 : 1,
+            opacity:
+              !canSubmit || loading
+                ? 0.5
+                : 1,
           }}
         >
           {loading
@@ -234,7 +296,9 @@ export default function NewAnalysisPage() {
         </button>
 
         {error && (
-          <p style={styles.errorText}>{error}</p>
+          <p style={styles.errorText}>
+            {error}
+          </p>
         )}
 
       </div>
@@ -253,43 +317,70 @@ export default function NewAnalysisPage() {
 
         <div style={styles.stepsRow}>
 
-          {HOW_STEPS.map((s, i) => (
-            <div key={s.n} style={styles.stepItem}>
+          {HOW_STEPS[activeTool].map(
+            (s, i) => (
 
-              <div style={styles.stepBadge}>{s.n}</div>
+              <div
+                key={s.n}
+                style={styles.stepItem}
+              >
 
-              <div>
-                <div style={styles.stepTitle}>
-                  {s.n}. {s.title}
+                <div style={styles.stepBadge}>
+                  {s.n}
                 </div>
-                <div style={styles.stepDesc}>
-                  {s.desc}
+
+                <div style={styles.stepContent}>
+
+                  <div style={styles.stepTitle}>
+                    {s.n}. {s.title}
+                  </div>
+
+                  <div style={styles.stepDesc}>
+                    {s.desc}
+                  </div>
+
                 </div>
+
+                {i < HOW_STEPS[activeTool].length - 1 && (
+                  <span style={styles.stepArrow}>
+                    →
+                  </span>
+                )}
+
               </div>
 
-              {i < HOW_STEPS.length - 1 && (
-                <span style={styles.stepArrow}>→</span>
-              )}
-
-            </div>
-          ))}
+            )
+          )}
 
         </div>
 
       </div>
 
-      {/* STAY SAFE BANNER */}
+      {/* STAY SAFE ONLINE */}
       <div style={styles.safeBanner}>
 
-        <div>
-          <div style={styles.safeTitle}>Stay Safe Online</div>
-          <div style={styles.safeSub}>
-            Verify before you click. It can save you from scams,
-            phishing and data theft.
-          </div>
-        </div>
+        <div style={styles.safeBannerContent}>
 
-        <span style={styles.safeIcon}>🔗</span>
+          <img
+            src={staySafeOnlineImage}
+            alt="Stay Safe Online"
+            style={styles.safeBannerImage}
+          />
+
+          <div style={styles.safeTextContainer}>
+
+            <div style={styles.safeTitle}>
+              Stay Safe Online
+            </div>
+
+            <div style={styles.safeSub}>
+              Verify before you click. It can save
+              you from scams, phishing and data theft.
+            </div>
+
+          </div>
+
+        </div>
 
       </div>
 
@@ -350,11 +441,15 @@ function ResultCard({ result }) {
           <strong>Indicators found:</strong>
 
           <ul style={styles.indicatorList}>
+
             {result.ruleIndicators.map(
               (ind, i) => (
-                <li key={i}>{ind}</li>
+                <li key={i}>
+                  {ind}
+                </li>
               )
             )}
+
           </ul>
 
         </div>
@@ -408,23 +503,42 @@ const styles = {
     border: '1px solid #E7E9F3',
     boxShadow: '0 4px 20px rgba(20, 30, 70, 0.06)',
     marginBottom: '20px',
+    boxSizing: 'border-box',
   },
 
   cardHeader: {
     display: 'flex',
     gap: '14px',
+    alignItems: 'center',
     marginBottom: '22px',
   },
 
-  cardHeaderIcon: {
-    width: '44px',
-    height: '44px',
-    borderRadius: '12px',
+  /*
+   * CONSTANT IMAGE
+   * This is always Check-url-link.png,
+   * even for Message and Image sections.
+   */
+  cardHeaderImageBox: {
+    width: '50px',
+    height: '50px',
+    borderRadius: '13px',
+    background: '#E3EAFF',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    fontSize: '19px',
     flexShrink: 0,
+    overflow: 'hidden',
+  },
+
+  cardHeaderImage: {
+    width: '65px',
+    height: '75px',
+    objectFit: 'contain',
+  },
+
+  cardHeaderText: {
+    flex: 1,
+    minWidth: 0,
   },
 
   cardTitle: {
@@ -438,6 +552,7 @@ const styles = {
     fontSize: '13px',
     color: '#5B6178',
     margin: 0,
+    lineHeight: 1.5,
   },
 
   inputRow: {
@@ -472,6 +587,7 @@ const styles = {
 
   fileInput: {
     fontSize: '14px',
+    maxWidth: '100%',
   },
 
   analyzeButton: {
@@ -497,6 +613,7 @@ const styles = {
     marginBottom: '20px',
     border: '2px solid',
     boxShadow: '0 4px 20px rgba(20, 30, 70, 0.06)',
+    boxSizing: 'border-box',
   },
 
   resultHeader: {
@@ -539,7 +656,7 @@ const styles = {
     fontSize: '16px',
     fontWeight: 700,
     color: '#12172B',
-    marginBottom: '20px',
+    margin: '0 0 20px 0',
   },
 
   stepsRow: {
@@ -554,6 +671,7 @@ const styles = {
     gap: '12px',
     alignItems: 'flex-start',
     position: 'relative',
+    minWidth: 0,
   },
 
   stepBadge: {
@@ -568,6 +686,10 @@ const styles = {
     justifyContent: 'center',
     fontWeight: 700,
     fontSize: '14px',
+  },
+
+  stepContent: {
+    minWidth: 0,
   },
 
   stepTitle: {
@@ -587,16 +709,40 @@ const styles = {
     color: '#C6CBE0',
     marginLeft: 'auto',
     fontSize: '18px',
+    flexShrink: 0,
   },
 
+  /*
+   * STAY SAFE ONLINE
+   * No image on the right side.
+   */
   safeBanner: {
     borderRadius: '16px',
     padding: '22px 28px',
     background: '#F1EBFF',
     display: 'flex',
-    justifyContent: 'space-between',
     alignItems: 'center',
     gap: '16px',
+    boxSizing: 'border-box',
+    marginBottom: '20px',
+  },
+
+  safeBannerContent: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '16px',
+    minWidth: 0,
+  },
+
+  safeBannerImage: {
+    width: '58px',
+    height: '58px',
+    objectFit: 'contain',
+    flexShrink: 0,
+  },
+
+  safeTextContainer: {
+    minWidth: 0,
   },
 
   safeTitle: {
@@ -609,12 +755,46 @@ const styles = {
   safeSub: {
     fontSize: '13px',
     color: '#5B6178',
-  },
-
-  safeIcon: {
-    fontSize: '34px',
-    opacity: 0.35,
-    flexShrink: 0,
+    lineHeight: 1.5,
   },
 
 };
+
+/* MOBILE RESPONSIVE */
+if (typeof document !== 'undefined') {
+  const styleId = 'fraudguard-new-analysis-mobile';
+
+  if (!document.getElementById(styleId)) {
+    const style = document.createElement('style');
+
+    style.id = styleId;
+
+    style.innerHTML = `
+      @media (max-width: 768px) {
+
+        .fraudguard-new-analysis-mobile {
+          width: 100%;
+        }
+
+      }
+
+      @media (max-width: 700px) {
+
+        .fraudguard-new-analysis-mobile .stepsRow {
+          flex-direction: column;
+        }
+
+      }
+
+      @media (max-width: 600px) {
+
+        body {
+          overflow-x: hidden;
+        }
+
+      }
+    `;
+
+    document.head.appendChild(style);
+  }
+}

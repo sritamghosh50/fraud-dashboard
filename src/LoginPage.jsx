@@ -3,6 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { api } from './api';
 
+import loginPageImage from './Logo/login-page.png';
+import fraudguardLogo from './Logo/Fraudguard.png';
+import detectScameImage from './Logo/detect-scame.png';
+import checkUrlLinkImage from './Logo/Link.png';
+import messageLogoImage from './Logo/message-logo.png';
+import imageLogoImage from './Logo/Image.png';
+import staySafeOnlineImage from './Logo/stay safe online.png';
+
 export default function LoginPage() {
   const [mode, setMode] = useState('login');
   const [email, setEmail] = useState('');
@@ -135,7 +143,7 @@ export default function LoginPage() {
           <div className="brand-header">
 
             <div className="brand-logo">
-              <ShieldIcon />
+              <img src={fraudguardLogo} alt="FraudGuard" className="brand-logo-image" />
             </div>
 
             <div>
@@ -176,70 +184,13 @@ export default function LoginPage() {
 
             </div>
 
-            {/* Illustration */}
+            {/* Main login illustration */}
             <div className="illustration">
-
-              <div className="illustration-glow glow-a"></div>
-              <div className="illustration-glow glow-b"></div>
-
-              {/* Link bubble */}
-              <div className="floating-bubble bubble-link">
-                <LinkIcon />
-              </div>
-
-              {/* Message bubble */}
-              <div className="floating-bubble bubble-message">
-                <MessageIcon />
-              </div>
-
-              {/* Image bubble */}
-              <div className="floating-bubble bubble-image">
-                <ImageIcon />
-              </div>
-
-              {/* Laptop */}
-              <div className="laptop">
-
-                <div className="laptop-screen">
-
-                  <div className="browser-bar">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                  </div>
-
-                  <div className="browser-content">
-
-                    <div className="mini-screen-shield">
-                      <ShieldIcon small />
-                    </div>
-
-                    <div className="screen-lines">
-                      <div></div>
-                      <div></div>
-                      <div></div>
-                    </div>
-
-                  </div>
-
-                </div>
-
-                <div className="laptop-base">
-                  <div className="laptop-trackpad"></div>
-                </div>
-
-              </div>
-
-              {/* Large shield */}
-              <div className="hero-shield">
-                <ShieldIcon large />
-              </div>
-
-              {/* Shield check */}
-              <div className="shield-check">
-                <CheckIcon />
-              </div>
-
+              <img
+                src={loginPageImage}
+                alt="FraudGuard secure login illustration"
+                className="login-page-image"
+              />
             </div>
 
           </div>
@@ -248,25 +199,25 @@ export default function LoginPage() {
           <div className="feature-row">
 
             <Feature
-              icon={<ShieldIcon small />}
+              icon={<img src={detectScameImage} alt="Detect scams" className="feature-image" />}
               title="Detect"
               subtitle="Scams"
             />
 
             <Feature
-              icon={<LinkIcon />}
+              icon={<img src={checkUrlLinkImage} alt="Verify links" className="feature-image" />}
               title="Verify"
               subtitle="Links"
             />
 
             <Feature
-              icon={<MessageIcon />}
+              icon={<img src={messageLogoImage} alt="Analyze messages" className="feature-image" />}
               title="Analyze"
               subtitle="Messages"
             />
 
             <Feature
-              icon={<ImageIcon />}
+              icon={<img src={imageLogoImage} alt="Check images" className="feature-image" />}
               title="Check"
               subtitle="Images"
             />
@@ -275,7 +226,11 @@ export default function LoginPage() {
 
           {/* Bottom slogan */}
           <div className="safe-world">
-            <ShieldIcon tiny />
+            <img
+              src={staySafeOnlineImage}
+              alt="Stay safe online"
+              className="safe-world-image"
+            />
             <span>
               Together for a Safer Digital World
             </span>
@@ -292,9 +247,13 @@ export default function LoginPage() {
 
           <div className="login-card">
 
-            {/* Small shield */}
+            {/* Stay safe online image */}
             <div className="login-icon">
-              <ShieldIcon small />
+              <img
+                src={staySafeOnlineImage}
+                alt="Stay safe online"
+                className="login-icon-image"
+              />
             </div>
 
             <h2>
@@ -749,6 +708,13 @@ export default function LoginPage() {
           justify-content: center;
         }
 
+        .brand-logo-image {
+          width: 65px;
+          height: 70px;
+          object-fit: contain;
+          display: block;
+        }
+
         .brand-name {
           font-size: 23px;
           font-weight: 750;
@@ -839,12 +805,23 @@ export default function LoginPage() {
 
         .illustration {
           position: absolute;
-
           right: -5px;
-          top: 40px;
-
+          top: 25px;
           width: 57%;
-          height: 390px;
+          height: 410px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 5;
+        }
+
+        .login-page-image {
+          width: 100%;
+          max-width: 470px;
+          max-height: 410px;
+          object-fit: contain;
+          display: block;
+          filter: drop-shadow(0 18px 30px rgba(52, 78, 145, 0.12));
         }
 
         .illustration-glow {
@@ -1181,6 +1158,14 @@ export default function LoginPage() {
             rgba(72,98,155,0.09);
         }
 
+        .feature-image {
+          width: 34px;
+          height: 34px;
+          object-fit: contain;
+          display: block;
+        }
+
+
         .feature-title {
           margin-top: 8px;
 
@@ -1203,6 +1188,14 @@ export default function LoginPage() {
         /* =====================================================
            SAFE WORLD
         ====================================================== */
+
+        .safe-world-image {
+          width: 25px;
+          height: 25px;
+          object-fit: contain;
+          display: block;
+        }
+
 
         .safe-world {
           position: absolute;
@@ -1246,6 +1239,14 @@ export default function LoginPage() {
           width: 100%;
           max-width: 475px;
         }
+
+        .login-icon-image {
+          width: 80px;
+          height: 90px;
+          object-fit: contain;
+          display: block;
+        }
+
 
         .login-icon {
           width: 47px;
@@ -1817,7 +1818,18 @@ export default function LoginPage() {
           }
 
           .safe-world {
-            display: none;
+            display: flex;
+            left: 22px;
+            right: 181px;
+            bottom: 16px;
+            justify-content: center;
+            text-align: center;
+            font-size: 10px;
+          }
+
+          .safe-world-image {
+            width: 24px;
+            height: 24px;
           }
 
           .login-panel {

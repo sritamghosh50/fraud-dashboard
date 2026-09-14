@@ -1,6 +1,12 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import linkImage from './Logo/Link.png';
+import messageImage from './Logo/message-logo.png';
+import scanImage from './Logo/Image.png';
+import homeImage from './Logo/Home.png';
+import whyItMattersImage from './Logo/why-it-matters.png';
+
 export default function HomePage() {
   const navigate = useNavigate();
 
@@ -12,7 +18,7 @@ export default function HomePage() {
   const tools = [
     {
       key: 'url',
-      icon: '🔗',
+      image: linkImage,
       color: '#3B5BFE',
       bg: '#E3EAFF',
       title: 'Check URL Link',
@@ -21,7 +27,7 @@ export default function HomePage() {
     },
     {
       key: 'message',
-      icon: '💬',
+      image: messageImage,
       color: '#8B5CF6',
       bg: '#F1EBFF',
       title: 'Analyze Message',
@@ -30,7 +36,7 @@ export default function HomePage() {
     },
     {
       key: 'image',
-      icon: '🖼️',
+      image: scanImage,
       color: '#10B9A6',
       bg: '#DFFAF4',
       title: 'Scan Image',
@@ -53,7 +59,7 @@ export default function HomePage() {
   return (
     <div>
 
-      {/* HERO — white card per reference */}
+      {/* HERO */}
       <div style={styles.hero}>
 
         <div>
@@ -68,11 +74,13 @@ export default function HomePage() {
           </p>
         </div>
 
-        <div style={styles.heroIcons}>
-          <span style={styles.heroIconBubble}>🔗</span>
-          <span style={{ ...styles.heroIconBubble, transform: 'translateY(10px)' }}>
-            💬
-          </span>
+        {/* HOME IMAGE */}
+        <div style={styles.heroHomeImageWrapper}>
+          <img
+            src={homeImage}
+            alt="Home"
+            style={styles.heroHomeImage}
+          />
         </div>
 
       </div>
@@ -83,19 +91,27 @@ export default function HomePage() {
         {tools.map((tool) => (
           <div key={tool.key} style={styles.card}>
 
+            {/* TOOL IMAGE */}
             <div
               style={{
                 ...styles.cardIcon,
                 background: tool.bg,
-                color: tool.color,
               }}
             >
-              {tool.icon}
+              <img
+                src={tool.image}
+                alt={tool.title}
+                style={styles.cardIconImage}
+              />
             </div>
 
-            <h3 style={styles.cardTitle}>{tool.title}</h3>
+            <h3 style={styles.cardTitle}>
+              {tool.title}
+            </h3>
 
-            <p style={styles.cardDesc}>{tool.desc}</p>
+            <p style={styles.cardDesc}>
+              {tool.desc}
+            </p>
 
             <button
               style={{
@@ -115,10 +131,20 @@ export default function HomePage() {
       {/* WHY IT MATTERS */}
       <div style={styles.infoBox}>
 
-        <span style={styles.infoIcon}>🛡</span>
+        {/* WHY IT MATTERS IMAGE */}
+        <div style={styles.infoIconWrapper}>
+          <img
+            src={whyItMattersImage}
+            alt="Why It Matters"
+            style={styles.infoIconImage}
+          />
+        </div>
 
         <div>
-          <div style={styles.infoTitle}>Why It Matters?</div>
+          <div style={styles.infoTitle}>
+            Why It Matters?
+          </div>
+
           <p style={styles.infoText}>
             Fraud can happen to anyone. Our AI helps you identify scams,
             fake links, suspicious messages and manipulated images —
@@ -133,6 +159,10 @@ export default function HomePage() {
 }
 
 const styles = {
+
+  /* =========================
+     HERO
+  ========================= */
 
   hero: {
     display: 'flex',
@@ -160,21 +190,28 @@ const styles = {
     margin: 0,
   },
 
-  heroIcons: {
-    display: 'flex',
-    gap: '10px',
-  },
-
-  heroIconBubble: {
-    width: '46px',
-    height: '46px',
-    borderRadius: '14px',
-    background: '#E3EAFF',
+  heroHomeImageWrapper: {
+    width: '110px',
+    height: '80px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    fontSize: '20px',
+    flexShrink: 0,
   },
+
+  heroHomeImage: {
+    width: '259px',
+    height: '161px',
+    objectFit: 'contain',
+    display: 'block',
+    position: 'relative',
+    left: '-42px',
+    top: '-2px',
+  },
+
+  /* =========================
+     TOOL CARDS
+  ========================= */
 
   cardGrid: {
     display: 'grid',
@@ -198,8 +235,16 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    fontSize: '22px',
     marginBottom: '16px',
+    overflow: 'hidden',
+    flexShrink: 0,
+  },
+
+  cardIconImage: {
+    width: '38px',
+    height: '38px',
+    objectFit: 'contain',
+    display: 'block',
   },
 
   cardTitle: {
@@ -228,16 +273,35 @@ const styles = {
     cursor: 'pointer',
   },
 
+  /* =========================
+     WHY IT MATTERS
+  ========================= */
+
   infoBox: {
     display: 'flex',
     gap: '14px',
+    alignItems: 'center',
     background: '#F4F6FC',
     borderRadius: '16px',
     padding: '20px 24px',
     border: '1px solid #E7E9F3',
   },
 
-  infoIcon: { fontSize: '20px' },
+  infoIconWrapper: {
+    width: '42px',
+    height: '42px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0,
+  },
+
+  infoIconImage: {
+    width: '64px',
+    height: '74px',
+    objectFit: 'contain',
+    display: 'block',
+  },
 
   infoTitle: {
     fontSize: '14px',
