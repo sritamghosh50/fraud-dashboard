@@ -700,8 +700,12 @@ export default function LoginPage() {
         }
 
         .brand-logo {
-          width: 38px;
-          height: 43px;
+          width: 46px;
+          height: 46px;
+
+          border-radius: 10px;
+
+          overflow: hidden;
 
           display: flex;
           align-items: center;
@@ -709,8 +713,8 @@ export default function LoginPage() {
         }
 
         .brand-logo-image {
-          width: 65px;
-          height: 70px;
+          width: 64px;
+          height: 88px;
           object-fit: contain;
           display: block;
         }
@@ -1753,8 +1757,17 @@ export default function LoginPage() {
             grid-template-columns: 1fr;
           }
 
+          /* -----------------------------------------------------
+             Below this width the hero panel switches from an
+             absolutely-positioned desktop composition to a
+             normal stacked flow layout, so nothing can overlap
+             regardless of viewport width.
+          ------------------------------------------------------ */
+
           .brand-panel {
-            min-height: 650px;
+            min-height: auto;
+
+            padding: 28px 24px 32px;
 
             border-right: none;
 
@@ -1762,8 +1775,97 @@ export default function LoginPage() {
               1px solid #dfe7f5;
           }
 
+          .brand-main {
+            position: static;
+
+            height: auto;
+
+            margin-top: 20px;
+
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+
+            column-gap: 16px;
+            row-gap: 0;
+
+            text-align: left;
+          }
+
+          .brand-text {
+            display: contents;
+          }
+
+          .brand-text h1 {
+            order: 1;
+
+            flex: 1 1 50%;
+            min-width: 150px;
+
+            font-size: clamp(20px, 6.2vw, 28px);
+            letter-spacing: -0.5px;
+          }
+
+          .illustration {
+            order: 2;
+
+            position: static;
+
+            flex: 1 1 44%;
+            min-width: 130px;
+
+            width: auto;
+            max-width: 100%;
+            height: auto;
+
+            margin: 0;
+          }
+
+          .login-page-image {
+            width: 100%;
+            max-height: 190px;
+            object-fit: contain;
+          }
+
+          .brand-text p {
+            order: 3;
+
+            flex: 1 1 100%;
+
+            margin: 16px 0 0;
+            max-width: 100%;
+          }
+
+          .feature-row {
+            position: static;
+
+            width: 100%;
+            max-width: 420px;
+
+            margin: 28px auto 0;
+
+            justify-content: space-between;
+            gap: 10px;
+          }
+
+          .feature {
+            width: auto;
+            flex: 1 1 0;
+          }
+
+          .safe-world {
+            position: static;
+
+            width: 100%;
+
+            margin-top: 20px;
+
+            justify-content: center;
+            text-align: center;
+          }
+
           .login-panel {
-            min-height: 650px;
+            min-height: auto;
           }
 
         }
@@ -1772,64 +1874,39 @@ export default function LoginPage() {
         @media (max-width: 560px) {
 
           .brand-panel {
-            padding:
-              25px
-              22px;
-          }
-
-          .brand-main {
-            height: 500px;
-          }
-
-          .brand-text {
-            position: relative;
-
-            top: 35px;
-
-            width: 100%;
-          }
-
-          .brand-text h1 {
-            font-size: 32px;
+            padding: 24px 18px 28px;
           }
 
           .brand-text p {
-            max-width: 350px;
-          }
-
-          .illustration {
-            top: 210px;
-
-            right: -20px;
-
-            width: 100%;
-
-            transform: scale(0.78);
-
-            transform-origin: top right;
+            font-size: 12.5px;
           }
 
           .feature-row {
-            left: 15px;
+            gap: 6px;
+          }
 
-            gap: 15px;
+          .feature-icon {
+            width: 38px;
+            height: 38px;
+          }
 
-            bottom: 58px;
+          .feature-image {
+            width: 28px;
+            height: 28px;
+          }
+
+          .feature-title,
+          .feature-subtitle {
+            font-size: 9px;
           }
 
           .safe-world {
-            display: flex;
-            left: 22px;
-            right: 181px;
-            bottom: 16px;
-            justify-content: center;
-            text-align: center;
             font-size: 10px;
           }
 
           .safe-world-image {
-            width: 24px;
-            height: 24px;
+            width: 22px;
+            height: 22px;
           }
 
           .login-panel {

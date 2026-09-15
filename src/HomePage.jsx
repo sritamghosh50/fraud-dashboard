@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import useIsMobile from './useIsMobile';
 
 import linkImage from './Logo/Link.png';
 import messageImage from './Logo/message-logo.png';
@@ -9,6 +10,7 @@ import whyItMattersImage from './Logo/why-it-matters.png';
 
 export default function HomePage() {
   const navigate = useNavigate();
+  const isMobile = useIsMobile(768);
 
   // When the user is on Home, History should show ALL types.
   useEffect(() => {
@@ -60,14 +62,14 @@ export default function HomePage() {
     <div>
 
       {/* HERO */}
-      <div style={styles.hero}>
+      <div style={isMobile ? styles.heroMobile : styles.hero}>
 
-        <div>
-          <h1 style={styles.heroTitle}>
+        <div style={isMobile ? { flex: '1 1 58%', minWidth: 0 } : undefined}>
+          <h1 style={isMobile ? styles.heroTitleMobile : styles.heroTitle}>
             Welcome to FraudGuard AI
           </h1>
 
-          <p style={styles.heroSub}>
+          <p style={isMobile ? styles.heroSubMobile : styles.heroSub}>
             Your personal AI-powered fraud detection assistant.
             <br />
             Choose an option below to get started.
@@ -75,18 +77,18 @@ export default function HomePage() {
         </div>
 
         {/* HOME IMAGE */}
-        <div style={styles.heroHomeImageWrapper}>
+        <div style={isMobile ? styles.heroHomeImageWrapperMobile : styles.heroHomeImageWrapper}>
           <img
             src={homeImage}
             alt="Home"
-            style={styles.heroHomeImage}
+            style={isMobile ? styles.heroHomeImageMobile : styles.heroHomeImage}
           />
         </div>
 
       </div>
 
       {/* TOOL CARDS */}
-      <div style={styles.cardGrid}>
+      <div style={isMobile ? styles.cardGridMobile : styles.cardGrid}>
 
         {tools.map((tool) => (
           <div key={tool.key} style={styles.card}>
@@ -129,7 +131,7 @@ export default function HomePage() {
       </div>
 
       {/* WHY IT MATTERS */}
-      <div style={styles.infoBox}>
+      <div style={isMobile ? styles.infoBoxMobile : styles.infoBox}>
 
         {/* WHY IT MATTERS IMAGE */}
         <div style={styles.infoIconWrapper}>
@@ -176,6 +178,23 @@ const styles = {
     boxShadow: '0 4px 20px rgba(20, 30, 70, 0.06)',
   },
 
+  heroMobile: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    columnGap: '12px',
+    rowGap: '10px',
+    background: '#FFFFFF',
+    borderRadius: '16px',
+    padding: '20px 18px',
+    marginBottom: '18px',
+    border: '1px solid #E7E9F3',
+    boxShadow: '0 4px 20px rgba(20, 30, 70, 0.06)',
+    boxSizing: 'border-box',
+  },
+
   heroTitle: {
     fontSize: '24px',
     fontWeight: 700,
@@ -183,10 +202,25 @@ const styles = {
     color: '#12172B',
   },
 
+  heroTitleMobile: {
+    fontSize: '17px',
+    fontWeight: 700,
+    margin: '0 0 6px 0',
+    color: '#12172B',
+    lineHeight: 1.25,
+  },
+
   heroSub: {
     fontSize: '14px',
     color: '#5B6178',
     lineHeight: 1.6,
+    margin: 0,
+  },
+
+  heroSubMobile: {
+    fontSize: '11.5px',
+    color: '#5B6178',
+    lineHeight: 1.5,
     margin: 0,
   },
 
@@ -199,14 +233,32 @@ const styles = {
     flexShrink: 0,
   },
 
+  heroHomeImageWrapperMobile: {
+    flex: '0 1 38%',
+    minWidth: '80px',
+    maxWidth: '130px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+
   heroHomeImage: {
     width: '259px',
     height: '161px',
     objectFit: 'contain',
     display: 'block',
     position: 'relative',
-    left: '-42px',
+    left: '-52px',
     top: '-2px',
+  },
+
+  heroHomeImageMobile: {
+    width: '100%',
+    height: 'auto',
+    maxHeight: '90px',
+    objectFit: 'contain',
+    display: 'block',
   },
 
   /* =========================
@@ -218,6 +270,13 @@ const styles = {
     gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
     gap: '20px',
     marginBottom: '24px',
+  },
+
+  cardGridMobile: {
+    display: 'grid',
+    gridTemplateColumns: '1fr',
+    gap: '14px',
+    marginBottom: '18px',
   },
 
   card: {
@@ -285,6 +344,18 @@ const styles = {
     borderRadius: '16px',
     padding: '20px 24px',
     border: '1px solid #E7E9F3',
+  },
+
+  infoBoxMobile: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '10px',
+    alignItems: 'flex-start',
+    background: '#F4F6FC',
+    borderRadius: '14px',
+    padding: '18px 18px',
+    border: '1px solid #E7E9F3',
+    boxSizing: 'border-box',
   },
 
   infoIconWrapper: {

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { api } from './api';
+import useIsMobile from './useIsMobile';
 
 import linkImage from './Logo/Link.png';
 import messageImage from './Logo/message-logo.png';
@@ -115,6 +116,7 @@ const FILTER_TABS = [
 ];
 
 export default function HistoryPage() {
+  const isMobile = useIsMobile(768);
   const [history, setHistory] = useState([]);
 
   const [loading, setLoading] = useState(true);
@@ -240,7 +242,7 @@ export default function HistoryPage() {
     <div style={styles.page}>
 
       {/* HEADER */}
-      <div style={styles.header}>
+      <div style={isMobile ? styles.headerMobile : styles.header}>
 
         <div style={{ minWidth: 0 }}>
 
@@ -353,26 +355,26 @@ export default function HistoryPage() {
           <div>
 
             {/* SUMMARY */}
-            <div style={styles.summaryRow}>
+            <div style={isMobile ? styles.summaryRowMobile : styles.summaryRow}>
 
-              <div style={styles.summaryCard}>
-                <span style={styles.summaryLabel}>
+              <div style={isMobile ? styles.summaryCardMobile : styles.summaryCard}>
+                <span style={isMobile ? styles.summaryLabelMobile : styles.summaryLabel}>
                   Total Checks
                 </span>
 
-                <strong style={styles.summaryValue}>
+                <strong style={isMobile ? styles.summaryValueMobile : styles.summaryValue}>
                   {filteredHistory.length}
                 </strong>
               </div>
 
-              <div style={styles.summaryCard}>
-                <span style={styles.summaryLabel}>
+              <div style={isMobile ? styles.summaryCardMobile : styles.summaryCard}>
+                <span style={isMobile ? styles.summaryLabelMobile : styles.summaryLabel}>
                   Scams Detected
                 </span>
 
                 <strong
                   style={{
-                    ...styles.summaryValue,
+                    ...(isMobile ? styles.summaryValueMobile : styles.summaryValue),
                     color: '#E14848',
                   }}
                 >
@@ -380,14 +382,14 @@ export default function HistoryPage() {
                 </strong>
               </div>
 
-              <div style={styles.summaryCard}>
-                <span style={styles.summaryLabel}>
+              <div style={isMobile ? styles.summaryCardMobile : styles.summaryCard}>
+                <span style={isMobile ? styles.summaryLabelMobile : styles.summaryLabel}>
                   Safe / Low Risk
                 </span>
 
                 <strong
                   style={{
-                    ...styles.summaryValue,
+                    ...(isMobile ? styles.summaryValueMobile : styles.summaryValue),
                     color: '#1AA45C',
                   }}
                 >
@@ -431,77 +433,132 @@ export default function HistoryPage() {
                   >
 
                     {/* ROW MAIN */}
-                    <div style={styles.rowMain}>
+                    <div style={isMobile ? styles.rowMainMobile : styles.rowMain}>
 
-                      {/* CHANGED IMAGE */}
-                      <div
-                        style={{
-                          ...styles.rowIcon,
-                          background: meta.bg,
-                        }}
-                      >
-                        <img
-                          src={meta.icon}
-                          alt=""
-                          style={styles.rowIconImage}
-                        />
-                      </div>
+                      <div style={styles.rowTopLine}>
 
-                      <div
-                        style={{
-                          flex: 1,
-                          minWidth: 0,
-                        }}
-                      >
-
-                        <div style={styles.rowTitle}>
-                          {meta.title}
+                        {/* CHANGED IMAGE */}
+                        <div
+                          style={{
+                            ...styles.rowIcon,
+                            background: meta.bg,
+                          }}
+                        >
+                          <img
+                            src={meta.icon}
+                            alt=""
+                            style={styles.rowIconImage}
+                          />
                         </div>
 
                         <div
-                          style={styles.rowSubtitle}
+                          style={{
+                            flex: 1,
+                            minWidth: 0,
+                          }}
                         >
-                          {item.inputSummary ||
-                            item.scamCategory ||
-                            'No content available'}
+
+                          <div style={styles.rowTitle}>
+                            {meta.title}
+                          </div>
+
+                          <div
+                            style={
+                              isMobile
+                                ? styles.rowSubtitleMobile
+                                : styles.rowSubtitle
+                            }
+                          >
+                            {item.inputSummary ||
+                              item.scamCategory ||
+                              'No content available'}
+                          </div>
+
                         </div>
 
-                      </div>
-
-                      <div style={styles.rowDate}>
-                        {formatDate(
-                          item.checkedAt
+                        {!isMobile && (
+                          <div style={styles.rowDate}>
+                            {formatDate(
+                              item.checkedAt
+                            )}
+                          </div>
                         )}
+
+                        {!isMobile && (
+                          <span
+                            style={{
+                              ...styles.statusBadge,
+                              background: isFraud
+                                ? '#FDE3E3'
+                                : '#DDF6E8',
+                              color: isFraud
+                                ? '#E14848'
+                                : '#1AA45C',
+                            }}
+                          >
+                            {isFraud
+                              ? 'Fraud'
+                              : 'Not Fraud'}
+                          </span>
+                        )}
+
+                        {!isMobile && (
+                          <button
+                            style={styles.viewButton}
+                            onClick={() =>
+                              toggleHistory(
+                                item.id
+                              )
+                            }
+                          >
+                            {isOpen
+                              ? 'Hide Details'
+                              : 'View Details'}
+                          </button>
+                        )}
+
                       </div>
 
-                      <span
-                        style={{
-                          ...styles.statusBadge,
-                          background: isFraud
-                            ? '#FDE3E3'
-                            : '#DDF6E8',
-                          color: isFraud
-                            ? '#E14848'
-                            : '#1AA45C',
-                        }}
-                      >
-                        {isFraud
-                          ? 'Fraud'
-                          : 'Not Fraud'}
-                      </span>
+                      {isMobile && (
+                        <div style={styles.rowBottomLine}>
 
-                      <button
-                        style={styles.viewButton}
-                        onClick={() =>
-                          toggleHistory(
-                            item.id
-                          )
-                        }
-                      >
-                        {isOpen
-                          ? 'Hide Details'
-                          : 'View Details'}
-                      </button>
+                          <div style={styles.rowDate}>
+                            {formatDate(
+                              item.checkedAt
+                            )}
+                          </div>
+
+                          <span
+                            style={{
+                              ...styles.statusBadge,
+                              background: isFraud
+                                ? '#FDE3E3'
+                                : '#DDF6E8',
+                              color: isFraud
+                                ? '#E14848'
+                                : '#1AA45C',
+                            }}
+                          >
+                            {isFraud
+                              ? 'Fraud'
+                              : 'Not Fraud'}
+                          </span>
+
+                          <button
+                            style={styles.viewButtonMobile}
+                            onClick={() =>
+                              toggleHistory(
+                                item.id
+                              )
+                            }
+                          >
+                            {isOpen
+                              ? 'Hide Details'
+                              : 'View Details'}
+                          </button>
+
+                        </div>
+                      )}
 
                     </div>
 
@@ -687,6 +744,14 @@ const styles = {
     marginBottom: '20px',
   },
 
+  headerMobile: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    gap: '12px',
+    marginBottom: '16px',
+  },
+
   heading: {
     fontSize: '24px',
     fontWeight: 700,
@@ -760,6 +825,13 @@ const styles = {
     marginBottom: '16px',
   },
 
+  summaryRowMobile: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(3, 1fr)',
+    gap: '6px',
+    marginBottom: '14px',
+  },
+
   summaryCard: {
     background: '#FFFFFF',
     borderRadius: '14px',
@@ -770,13 +842,42 @@ const styles = {
     gap: '2px',
   },
 
+  summaryCardMobile: {
+    background: '#FFFFFF',
+    borderRadius: '10px',
+    border: '1px solid #E7E9F3',
+    padding: '10px 6px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: '2px',
+    minWidth: 0,
+  },
+
   summaryLabel: {
     fontSize: '12px',
     color: '#9AA0B4',
   },
 
+  summaryLabelMobile: {
+    fontSize: '9px',
+    color: '#9AA0B4',
+    textAlign: 'center',
+    lineHeight: 1.25,
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    maxWidth: '100%',
+  },
+
   summaryValue: {
     fontSize: '20px',
+    fontWeight: 700,
+    color: '#12172B',
+  },
+
+  summaryValueMobile: {
+    fontSize: '15px',
     fontWeight: 700,
     color: '#12172B',
   },
@@ -795,6 +896,28 @@ const styles = {
     alignItems: 'center',
     gap: '14px',
     padding: '16px 18px',
+  },
+
+  rowMainMobile: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '10px',
+    padding: '14px',
+    boxSizing: 'border-box',
+  },
+
+  rowTopLine: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    minWidth: 0,
+  },
+
+  rowBottomLine: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    flexWrap: 'wrap',
   },
 
   rowIcon: {
@@ -830,6 +953,15 @@ const styles = {
     maxWidth: '340px',
   },
 
+  rowSubtitleMobile: {
+    fontSize: '12.5px',
+    color: '#9AA0B4',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    maxWidth: '100%',
+  },
+
   rowDate: {
     fontSize: '12px',
     color: '#9AA0B4',
@@ -856,6 +988,19 @@ const styles = {
     fontWeight: 600,
     cursor: 'pointer',
     flexShrink: 0,
+    whiteSpace: 'nowrap',
+  },
+
+  viewButtonMobile: {
+    padding: '7px 12px',
+    borderRadius: '10px',
+    border: '1px solid #E7E9F3',
+    background: '#FFFFFF',
+    color: '#3B5BFE',
+    fontSize: '12px',
+    fontWeight: 600,
+    cursor: 'pointer',
+    marginLeft: 'auto',
     whiteSpace: 'nowrap',
   },
 

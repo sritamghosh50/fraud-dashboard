@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
+import useIsMobile from './useIsMobile';
 
 export default function ProfilePage() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
+  const isMobile = useIsMobile(768);
 
   function handleLogout() {
     logout();
@@ -30,10 +32,10 @@ export default function ProfilePage() {
       <h1 style={styles.title}>Profile</h1>
       <p style={styles.subtitle}>Manage your FraudGuard AI account details.</p>
 
-      <div style={styles.card}>
+      <div style={isMobile ? styles.cardMobile : styles.card}>
         <div style={styles.avatarRow}>
           <div style={styles.avatar}>{initials}</div>
-          <div>
+          <div style={{ minWidth: 0 }}>
             <div style={styles.name}>{user?.fullName || 'Unnamed User'}</div>
             <div style={styles.email} onClick={copyEmail} title="Click to copy">
               {user?.email} {copied ? '✓ Copied' : ''}
@@ -43,7 +45,7 @@ export default function ProfilePage() {
 
         <div style={styles.divider} />
 
-        <div style={styles.infoGrid}>
+        <div style={isMobile ? styles.infoGridMobile : styles.infoGrid}>
           <InfoRow label="Full name" value={user?.fullName || '—'} />
           <InfoRow label="Email address" value={user?.email || '—'} />
           <InfoRow label="Account type" value="Standard" />
@@ -51,7 +53,7 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      <div style={styles.card}>
+      <div style={isMobile ? styles.cardMobile : styles.card}>
         <h3 style={styles.sectionTitle}>Security</h3>
         <p style={styles.sectionDesc}>
           Your password is securely hashed and never stored in plain text.
@@ -62,7 +64,7 @@ export default function ProfilePage() {
         </button>
       </div>
 
-      <div style={styles.infoBanner}>
+      <div style={isMobile ? styles.infoBannerMobile : styles.infoBanner}>
         <span style={styles.infoBannerIcon}>🛡</span>
         <p style={styles.infoBannerText}>
           FraudGuard AI keeps your check history private — only you can see your own
@@ -84,12 +86,16 @@ function InfoRow({ label, value, hint }) {
 }
 
 const styles = {
-  wrap: { maxWidth: '620px' },
+  wrap: { maxWidth: '620px', width: '100%', boxSizing: 'border-box' },
   title: { fontSize: '22px', fontWeight: 700, color: '#1e1b3a', margin: '0 0 4px 0' },
   subtitle: { fontSize: '13.5px', color: '#6b7280', margin: '0 0 24px 0' },
   card: {
     background: 'white', borderRadius: '16px', padding: '26px',
     border: '1px solid #eceafe', marginBottom: '20px',
+  },
+  cardMobile: {
+    background: 'white', borderRadius: '14px', padding: '18px',
+    border: '1px solid #eceafe', marginBottom: '16px', boxSizing: 'border-box',
   },
   avatarRow: { display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '4px' },
   avatar: {
@@ -99,12 +105,16 @@ const styles = {
     fontWeight: 700, fontSize: '20px', flexShrink: 0,
   },
   name: { fontSize: '17px', fontWeight: 700, color: '#1e1b3a', marginBottom: '4px' },
-  email: { fontSize: '13px', color: '#6b7280', cursor: 'pointer' },
+  email: {
+    fontSize: '13px', color: '#6b7280', cursor: 'pointer',
+    overflowWrap: 'break-word', wordBreak: 'break-word',
+  },
   divider: { height: '1px', background: '#f0eefe', margin: '22px 0' },
   infoGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '18px' },
-  infoRow: { display: 'flex', flexDirection: 'column', gap: '4px' },
+  infoGridMobile: { display: 'grid', gridTemplateColumns: '1fr', gap: '14px' },
+  infoRow: { display: 'flex', flexDirection: 'column', gap: '4px', minWidth: 0 },
   infoLabel: { fontSize: '11.5px', fontWeight: 700, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.03em' },
-  infoValue: { fontSize: '14px', color: '#1e1b3a', fontWeight: 500 },
+  infoValue: { fontSize: '14px', color: '#1e1b3a', fontWeight: 500, overflowWrap: 'break-word', wordBreak: 'break-word' },
   infoHint: { fontSize: '11px', color: '#c4c1e0', fontStyle: 'italic' },
   sectionTitle: { fontSize: '15px', fontWeight: 700, color: '#1e1b3a', margin: '0 0 8px 0' },
   sectionDesc: { fontSize: '13px', color: '#6b7280', lineHeight: 1.6, margin: '0 0 18px 0' },
@@ -115,6 +125,10 @@ const styles = {
   infoBanner: {
     display: 'flex', gap: '12px', background: '#eef0ff', borderRadius: '14px',
     padding: '18px 22px', alignItems: 'flex-start',
+  },
+  infoBannerMobile: {
+    display: 'flex', gap: '10px', background: '#eef0ff', borderRadius: '14px',
+    padding: '16px 16px', alignItems: 'flex-start', boxSizing: 'border-box',
   },
   infoBannerIcon: { fontSize: '18px' },
   infoBannerText: { fontSize: '12.5px', color: '#4f46e5', lineHeight: 1.6, margin: 0 },

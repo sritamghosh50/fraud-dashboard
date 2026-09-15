@@ -1,5 +1,6 @@
 import { Link, useLocation, useNavigate, Outlet } from 'react-router-dom';
 import { useAuth } from './AuthContext';
+import useIsMobile from './useIsMobile';
 
 import fraudguardLogo from './Logo/Fraudguard.png';
 
@@ -7,6 +8,7 @@ export default function Layout() {
   const { user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+  const isMobile = useIsMobile(768);
 
   const navItems = [
     { path: '/', label: 'Home', icon: '🏠' },
@@ -21,12 +23,14 @@ export default function Layout() {
   }
 
   return (
-    <div style={styles.wrapper}>
+    <div style={isMobile ? styles.wrapperMobile : styles.wrapper}>
 
-      <aside style={styles.sidebar}>
+      {/* SIDEBAR (desktop) — becomes a compact top bar on mobile,
+          nav links move to a fixed bottom tab bar instead. */}
+      <aside style={isMobile ? styles.sidebarMobile : styles.sidebar}>
 
         {/* FRAUDGUARD LOGO */}
-        <div style={styles.logoRow}>
+        <div style={isMobile ? { ...styles.logoRow, marginBottom: 0 } : styles.logoRow}>
           <div style={styles.logoIcon}>
             <img
               src={fraudguardLogo}
@@ -40,7 +44,84 @@ export default function Layout() {
           </span>
         </div>
 
-        <nav style={styles.nav}>
+        {!isMobile && (
+          <nav style={styles.nav}>
+            {navItems.map((item) => {
+              const isActive = location.pathname === item.path;
+
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  style={{
+                    ...styles.navItem,
+                    ...(isActive ? styles.navItemActive : {}),
+                  }}
+                >
+                  <span style={styles.navIcon}>
+                    {item.icon}
+                  </span>
+
+                  {item.label}
+                </Link>
+              );
+            })}
+          </nav>
+        )}
+
+        {!isMobile && (
+          <button
+            onClick={handleLogout}
+            style={styles.logoutButton}
+          >
+            <span>🚪</span>
+            Logout
+          </button>
+        )}
+
+        {isMobile && (
+          <div style={styles.avatar}>
+            {(user?.fullName || user?.email || '?')[0].toUpperCase()}
+          </div>
+        )}
+
+      </aside>
+
+      <div style={styles.mainArea}>
+
+        {!isMobile && (
+          <header style={styles.header}>
+            <div />
+
+            <div style={styles.userBadge}>
+
+              <div style={styles.avatar}>
+                {(user?.fullName || user?.email || '?')[0].toUpperCase()}
+              </div>
+
+              <div>
+                <div style={styles.userName}>
+                  Hello, {user?.fullName || 'there'}
+                </div>
+
+                <div style={styles.userEmail}>
+                  {user?.email}
+                </div>
+              </div>
+
+            </div>
+          </header>
+        )}
+
+        <main style={isMobile ? styles.contentMobile : styles.content}>
+          <Outlet />
+        </main>
+
+      </div>
+
+      {/* BOTTOM TAB BAR (mobile only) */}
+      {isMobile && (
+        <nav style={styles.bottomNav}>
           {navItems.map((item) => {
             const isActive = location.pathname === item.path;
 
@@ -49,59 +130,29 @@ export default function Layout() {
                 key={item.path}
                 to={item.path}
                 style={{
-                  ...styles.navItem,
-                  ...(isActive ? styles.navItemActive : {}),
+                  ...styles.bottomNavItem,
+                  ...(isActive ? styles.bottomNavItemActive : {}),
                 }}
               >
-                <span style={styles.navIcon}>
+                <span style={styles.bottomNavIcon}>
                   {item.icon}
                 </span>
-
-                {item.label}
+                <span style={styles.bottomNavLabel}>
+                  {item.label}
+                </span>
               </Link>
             );
           })}
+
+          <button
+            onClick={handleLogout}
+            style={styles.bottomNavItem}
+          >
+            <span style={styles.bottomNavIcon}>🚪</span>
+            <span style={styles.bottomNavLabel}>Logout</span>
+          </button>
         </nav>
-
-        <button
-          onClick={handleLogout}
-          style={styles.logoutButton}
-        >
-          <span>🚪</span>
-          Logout
-        </button>
-
-      </aside>
-
-      <div style={styles.mainArea}>
-
-        <header style={styles.header}>
-          <div />
-
-          <div style={styles.userBadge}>
-
-            <div style={styles.avatar}>
-              {(user?.fullName || user?.email || '?')[0].toUpperCase()}
-            </div>
-
-            <div>
-              <div style={styles.userName}>
-                Hello, {user?.fullName || 'there'}
-              </div>
-
-              <div style={styles.userEmail}>
-                {user?.email}
-              </div>
-            </div>
-
-          </div>
-        </header>
-
-        <main style={styles.content}>
-          <Outlet />
-        </main>
-
-      </div>
+      )}
 
     </div>
   );
@@ -111,6 +162,14 @@ const styles = {
 
   wrapper: {
     display: 'flex',
+    minHeight: '100vh',
+    background: '#f6f5ff',
+    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+  },
+
+  wrapperMobile: {
+    display: 'flex',
+    flexDirection: 'column',
     minHeight: '100vh',
     background: '#f6f5ff',
     fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
@@ -126,6 +185,22 @@ const styles = {
     position: 'sticky',
     top: 0,
     height: '100vh',
+    flexShrink: 0,
+    boxSizing: 'border-box',
+  },
+
+  sidebarMobile: {
+    width: '100%',
+    boxSizing: 'border-box',
+    background: 'white',
+    borderBottom: '1px solid #eceafe',
+    padding: '14px 16px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    position: 'sticky',
+    top: 0,
+    zIndex: 30,
   },
 
   logoRow: {
@@ -254,6 +329,62 @@ const styles = {
   content: {
     flex: 1,
     padding: '32px',
+  },
+
+  contentMobile: {
+    flex: 1,
+    padding: '16px 14px 90px',
+    minWidth: 0,
+    boxSizing: 'border-box',
+    width: '100%',
+  },
+
+  bottomNav: {
+    position: 'fixed',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 30,
+    display: 'flex',
+    background: 'white',
+    borderTop: '1px solid #eceafe',
+    boxShadow: '0 -4px 16px rgba(20, 20, 60, 0.06)',
+    padding: '6px 4px calc(6px + env(safe-area-inset-bottom, 0px))',
+  },
+
+  bottomNavItem: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '2px',
+    padding: '6px 2px',
+    border: 'none',
+    background: 'transparent',
+    color: '#6b7280',
+    textDecoration: 'none',
+    fontSize: '10.5px',
+    fontWeight: 500,
+    cursor: 'pointer',
+    minWidth: 0,
+  },
+
+  bottomNavItemActive: {
+    color: '#4f46e5',
+    fontWeight: 700,
+  },
+
+  bottomNavIcon: {
+    fontSize: '18px',
+    lineHeight: 1,
+  },
+
+  bottomNavLabel: {
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    maxWidth: '100%',
   },
 
 };

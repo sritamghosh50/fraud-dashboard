@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { api } from './api';
+import useIsMobile from './useIsMobile';
 
 import checkUrlLinkImage from './Logo/Check-url-link.png';
 import staySafeOnlineImage from './Logo/stay safe online.png';
@@ -89,6 +90,7 @@ const HOW_STEPS = {
 
 export default function NewAnalysisPage() {
   const location = useLocation();
+  const isMobile = useIsMobile(768);
 
   const initialTool =
     location.state?.tool ||
@@ -175,7 +177,7 @@ export default function NewAnalysisPage() {
     <div style={styles.pageWrap}>
 
       {/* TOOL TABS */}
-      <div style={styles.tabRow}>
+      <div style={isMobile ? styles.tabRowMobile : styles.tabRow}>
 
         {Object.entries(TOOL_CONFIG).map(
           ([key, cfg]) => (
@@ -183,7 +185,7 @@ export default function NewAnalysisPage() {
               key={key}
               onClick={() => switchTool(key)}
               style={{
-                ...styles.tab,
+                ...(isMobile ? styles.tabMobile : styles.tab),
                 ...(activeTool === key
                   ? {
                       background: cfg.color,
@@ -315,14 +317,14 @@ export default function NewAnalysisPage() {
           How it works?
         </h3>
 
-        <div style={styles.stepsRow}>
+        <div style={isMobile ? styles.stepsRowMobile : styles.stepsRow}>
 
           {HOW_STEPS[activeTool].map(
             (s, i) => (
 
               <div
                 key={s.n}
-                style={styles.stepItem}
+                style={isMobile ? styles.stepItemMobile : styles.stepItem}
               >
 
                 <div style={styles.stepBadge}>
@@ -341,7 +343,7 @@ export default function NewAnalysisPage() {
 
                 </div>
 
-                {i < HOW_STEPS[activeTool].length - 1 && (
+                {i < HOW_STEPS[activeTool].length - 1 && !isMobile && (
                   <span style={styles.stepArrow}>
                     →
                   </span>
@@ -485,6 +487,13 @@ const styles = {
     flexWrap: 'wrap',
   },
 
+  tabRowMobile: {
+    display: 'flex',
+    gap: '5px',
+    marginBottom: '16px',
+    flexWrap: 'nowrap',
+  },
+
   tab: {
     padding: '9px 16px',
     borderRadius: '10px',
@@ -494,6 +503,23 @@ const styles = {
     fontSize: '13.5px',
     fontWeight: 600,
     cursor: 'pointer',
+  },
+
+  tabMobile: {
+    flex: '1 1 0',
+    minWidth: 0,
+    padding: '8px 4px',
+    borderRadius: '9px',
+    border: '1px solid #E7E9F3',
+    background: 'white',
+    color: '#5B6178',
+    fontSize: '10.5px',
+    fontWeight: 600,
+    cursor: 'pointer',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    textAlign: 'center',
   },
 
   card: {
@@ -665,12 +691,25 @@ const styles = {
     alignItems: 'flex-start',
   },
 
+  stepsRowMobile: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '16px',
+  },
+
   stepItem: {
     flex: 1,
     display: 'flex',
     gap: '12px',
     alignItems: 'flex-start',
     position: 'relative',
+    minWidth: 0,
+  },
+
+  stepItemMobile: {
+    display: 'flex',
+    gap: '12px',
+    alignItems: 'flex-start',
     minWidth: 0,
   },
 
@@ -759,42 +798,3 @@ const styles = {
   },
 
 };
-
-/* MOBILE RESPONSIVE */
-if (typeof document !== 'undefined') {
-  const styleId = 'fraudguard-new-analysis-mobile';
-
-  if (!document.getElementById(styleId)) {
-    const style = document.createElement('style');
-
-    style.id = styleId;
-
-    style.innerHTML = `
-      @media (max-width: 768px) {
-
-        .fraudguard-new-analysis-mobile {
-          width: 100%;
-        }
-
-      }
-
-      @media (max-width: 700px) {
-
-        .fraudguard-new-analysis-mobile .stepsRow {
-          flex-direction: column;
-        }
-
-      }
-
-      @media (max-width: 600px) {
-
-        body {
-          overflow-x: hidden;
-        }
-
-      }
-    `;
-
-    document.head.appendChild(style);
-  }
-}
