@@ -1011,16 +1011,19 @@ const styles = {
   },
 
   detailGrid: {
-    display: 'flex',
-    gap: '24px',
-    flexWrap: 'wrap',
-  },
+  display: 'grid',
+  gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+  gap: '24px',
+  alignItems: 'start',
+  width: '100%',
+},
 
-  detailItem: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '2px',
-  },
+ detailItem: {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '2px',
+  minWidth: 0,
+},
 
   detailLabel: {
     fontSize: '11.5px',
