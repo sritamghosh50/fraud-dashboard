@@ -46,7 +46,7 @@ export default function LoginPage() {
    *
    * http://localhost:5173/oauth2/callback
    */
-  function handleOAuthLogin(provider) {
+ function handleOAuthLogin(provider) {
   if (oauthLoading || loading) {
     return;
   }
