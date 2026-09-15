@@ -47,17 +47,20 @@ export default function LoginPage() {
    * http://localhost:5173/oauth2/callback
    */
   function handleOAuthLogin(provider) {
-    if (oauthLoading || loading) {
-      return;
-    }
-
-    setError('');
-    setOauthLoading(provider);
-
-    window.location.href =
-      `http://localhost:8080/oauth2/authorization/${provider}`;
+  if (oauthLoading || loading) {
+    return;
   }
 
+  setError('');
+  setOauthLoading(provider);
+
+  const backendUrl =
+    import.meta.env.VITE_API_BASE ||
+    'http://localhost:8080';
+
+  window.location.href =
+    `${backendUrl}/oauth2/authorization/${provider}`;
+}
   /*
    * =========================================================
    * EMAIL / PASSWORD LOGIN
