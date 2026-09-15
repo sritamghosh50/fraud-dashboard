@@ -910,6 +910,7 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     gap: '12px',
+    flex: 1,
     minWidth: 0,
   },
 
